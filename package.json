@@ -1,0 +1,18 @@
+{
+  "name": "trump-ifttt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "static-server -p 3000",
+    "build": "tsc && browserify scripts/app.js -o scripts/main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "static-server": "^2.0.3",
+    "typescript": "^2.1.4",
+    "browserify": "^13.1.1"
+  }
+}

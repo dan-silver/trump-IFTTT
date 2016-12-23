@@ -1,0 +1,5 @@
+node_modules/
+bower_components/
+scripts/*.d.ts
+scripts/*.js
+scripts/*.js.map
