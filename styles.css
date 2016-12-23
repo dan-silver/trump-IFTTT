@@ -348,3 +348,7 @@ _:-ms-input-placeholder, :root .demo-graph {
     width: 22px;
     height: 22px  
 }
+
+#makerDialog {
+  min-width: 44%;
+}

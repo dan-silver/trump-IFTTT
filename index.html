@@ -114,12 +114,21 @@
       <div class="mdl-dialog__content">
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--12-col">
-            In order to send your IFTTT acount custom events, we need your Maker key. You can find it at <a target="_blank" href="https://internal-api.ifttt.com/maker">https://internal-api.ifttt.com/maker</a>.
+            <p>
+              In order to send IFTTT custom events, we need your Maker key. You can find it at <a target="_blank" href="https://ifttt.com/services/maker/settings">https://ifttt.com/services/maker/settings</a>.
+            </p>
+            <p>
+              Your key is the part after "/use".
+            </p>
+            <a href="https://ifttt.com/services/maker/settings" target="_blank">
+              <img src="images/maker-example.png" style="max-width: 100%;"/>
+            </a>
+
           </div>
           <div class="mdl-cell mdl-cell--12-col">
             <form action="#">
-              <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="text" id="makerKey" ng-model="makerKey" ng-model-options="{ debounce: 400 }">
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width:100%">
+                <input class="mdl-textfield__input " type="text" id="makerKey" ng-model="makerKey" ng-model-options="{ debounce: 400 }">
                 <label class="mdl-textfield__label" for="makerKey">Your Maker Key</label>
               </div>
             </form>

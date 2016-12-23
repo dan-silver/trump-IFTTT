@@ -44,3 +44,16 @@ export const actions:Action[] = [
     cssClasses: ["mdl-color--lime-300", "congress-background"]
   }
 ]
+
+const config = {
+  apiKey: "AIzaSyC-8RA-yIW0pNfPjFrOS8G0eCEAlh8QbO0",
+  authDomain: "trump-ifttt.firebaseapp.com",
+  databaseURL: "https://trump-ifttt.firebaseio.com",
+  storageBucket: "trump-ifttt.appspot.com",
+  messagingSenderId: "248784558301" 
+};
+
+firebase.initializeApp(config);
+
+export const database = firebase.database();
+export const provider = new firebase.auth.GoogleAuthProvider();

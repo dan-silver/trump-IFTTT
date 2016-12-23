@@ -1,46 +1,11 @@
 import {actions, Action, User} from './common';
+import * as users from './users'
 
 declare var angular;
-
-const config = {
-  apiKey: "AIzaSyC-8RA-yIW0pNfPjFrOS8G0eCEAlh8QbO0",
-  authDomain: "trump-ifttt.firebaseapp.com",
-  databaseURL: "https://trump-ifttt.firebaseio.com",
-  storageBucket: "trump-ifttt.appspot.com",
-  messagingSenderId: "248784558301" 
-};
-
-firebase.initializeApp(config);
-
-const database = firebase.database();
-const provider = new firebase.auth.GoogleAuthProvider();
-
 
 const app = angular.module('trump', []);
 
 app.controller('TrumpController', function TrumpController($scope) {
-  $scope.actions = actions;
-
-  let completeLogin = function(existingUser?:User):Promise<User> {
-    return new Promise<User>((resolve, reject) => {
-      if (existingUser) {
-        // this line 
-        // existingUser.actions = existingUser.actions || {};
-        return resolve(existingUser);
-      }
-
-      return resolve(getUserFromGoogleSignin().then((newUser) => {
-        newUser.actions = {placeholder:true};
-        return saveUserToDb(newUser, false, false);
-      }));
-    }).then((user) => {
-      $scope.$apply();
-      return user;
-    })
-  }
-
-  $scope.completeLogin = completeLogin;
-
   $scope.actionIsEnabled = function(action:Action) {
     let user = $scope.getUser();
     if (!user || user.actions == undefined) {
@@ -63,33 +28,16 @@ app.controller('TrumpController', function TrumpController($scope) {
   let toggleAction = (enabled:boolean, user:User, action:Action):firebase.Promise<any> => {
     user.actions[action.code] = enabled;
     $scope.$apply();
-    return saveUserToDb(user, true, false);
+    return users.saveToDb(user, true, false);
   }
 
-  let saveUserToDb = function(user:User, includeActions:boolean, includeMakerKey:boolean):firebase.Promise<any> {
-    let userData:User = {
-        displayName: user.displayName,
-        email: user.email,
-        uid: user.uid
-    };
-
-    if (includeActions) {
-        userData.actions = user.actions;
-    }
-
-    if (includeMakerKey) {
-        userData.makerKey = user.makerKey;
-    }
-
-    return firebase.database().ref('users/' + user.uid).update(userData);
-  }
 
   $scope.disableAction = (action:Action) => {
-    completeLogin(guser).then((user) => {
+    users.completeLogin(guser).then((user) => {
+      $scope.$apply();
       toggleAction(false, user, action);
     })
   }
-
 
   let configureAction = (action:Action) => {
     return ensureMakerKeyIsSet().then(() => {
@@ -98,12 +46,12 @@ app.controller('TrumpController', function TrumpController($scope) {
 
       dialog.showModal();
       $scope.$apply();
-    })
+    });
   }
 
-
   $scope.setupAction = (action:Action) => {
-    completeLogin(guser).then(() => {
+    users.completeLogin(guser).then(() => {
+      $scope.$apply();
       return configureAction(action);
     }).then(() => {
       return toggleAction(true, guser, action);
@@ -116,18 +64,6 @@ app.controller('TrumpController', function TrumpController($scope) {
     return firebase.auth().signOut();
   }
 
-  $scope.signout = signout;
-
-  let getUserFromGoogleSignin = function():Promise<User> {
-    return new Promise((resolve, reject) => {
-      firebase.auth().signInWithPopup(provider).then(function(result) {
-        resolve(result.user);
-      });
-    });
-  }
-
-  $scope.signin = getUserFromGoogleSignin;
-
   // try to restore a session
   let guser:User;
   $scope.getUser = function() {
@@ -137,7 +73,8 @@ app.controller('TrumpController', function TrumpController($scope) {
   firebase.auth().onAuthStateChanged((user) => {
     guser = user;
     if (user) {
-      completeLogin(user).then((user) => {
+      users.completeLogin(user).then((user) => {
+        $scope.$apply();
         listenForActions(guser);
       });
     } else {
@@ -145,7 +82,6 @@ app.controller('TrumpController', function TrumpController($scope) {
       $scope.$apply();
     }
   });
-
 
   // promise returns when dialog is closed
   // resolve if key is set
@@ -161,11 +97,8 @@ app.controller('TrumpController', function TrumpController($scope) {
         textField.checkDirty();
       }, 0);
 
-
-
-      var dialog:any = document.getElementById('makerDialog');
+      const dialog:any = document.getElementById('makerDialog');
       dialog.showModal();
-      console.log
       dialog.addEventListener("close", () => {
         if ($scope.makerKey)
           return resolve();
@@ -176,17 +109,13 @@ app.controller('TrumpController', function TrumpController($scope) {
     });
   }
 
-
-  $scope.setMakerKey = setMakerKey;
-
-
   $scope.$watch('makerKey', (newValue, oldValue) => {
     if (newValue === oldValue) {
       return;
     }
 
     guser.makerKey = $scope.makerKey;
-    saveUserToDb(guser, false, true);
+    users.saveToDb(guser, false, true);
 
   }, true);
 
@@ -207,10 +136,15 @@ app.controller('TrumpController', function TrumpController($scope) {
     });
   }
 
-  $scope.configureAction = configureAction;
-
   $scope.closeDialogById = (id:string) => {
     var dialog:any = document.getElementById(id);
     dialog.close();
-  }
+  };
+
+  $scope.actions = actions;
+  $scope.completeLogin = users.completeLogin;
+  $scope.setMakerKey = setMakerKey;
+  $scope.configureAction = configureAction;
+  $scope.signout = signout;
+  $scope.signin = users.getFromGoogleSignin;
 });
