@@ -71,15 +71,19 @@ app.controller('TrumpController', function TrumpController($scope) {
     return guser;
   }
 
+  $scope.loadingUser = true;
+
   firebase.auth().onAuthStateChanged((user) => {
     // when log out
     if (!user) {
       guser = null;
+      $scope.loadingUser = false;
       $scope.$apply();
       return;
     }
 
     users.completeLogin(user).then((user) => {
+      $scope.loadingUser = false;
       guser = user;
       $scope.$apply();
     })
