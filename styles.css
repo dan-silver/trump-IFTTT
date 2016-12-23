@@ -192,6 +192,20 @@ _:-ms-input-placeholder, :root .demo-graph {
   background-size: cover;
 }
 
+.congress-background {
+  background-image: url('images/congress.png');
+}
+
+.documents-background {
+  background-image: url('images/documents.svg');
+  background-size: 110px;
+}
+.mosque-background {
+  background-image: url('images/mosque.svg');
+  background-size: 150px;
+  background-position-y: 108% !important;
+}
+
 .plane-background {
   background-image: url('images/plane.png');
 }
@@ -236,4 +250,10 @@ _:-ms-input-placeholder, :root .demo-graph {
 
 .is-small-screen .subtitle{
   display: none;
+}
+
+.icon-card {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
 }

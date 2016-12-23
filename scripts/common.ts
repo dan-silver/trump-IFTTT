@@ -8,7 +8,7 @@ export interface User {
   displayName: string,
   email: string,
   uid: string,
-  actions: {}
+  actions?: {}
 }
 
 export const actions:Action[] = [
@@ -23,8 +23,23 @@ export const actions:Action[] = [
     cssClasses: ["mdl-color--light-blue-300", "trump-background"]
   },
   {
+    name:"Trump bans Muslim immigration",
+    code:"muslim-immigration",
+    cssClasses: ["mdl-color--cyan-300", "mosque-background"]
+  },
+  {
+    name:"Trump leaks classified documents",
+    code:"leak-documents",
+    cssClasses: ["mdl-color--orange-300", "documents-background"]
+  },
+  {
     name:"Trump visits Russia",
     code:"visit-russia",
     cssClasses: ["mdl-color--purple-300", "plane-background"]
+  },
+  {
+    name:"Congress votes to impeach Trump",
+    code:"impeach-trump",
+    cssClasses: ["mdl-color--lime-300", "congress-background"]
   }
 ]

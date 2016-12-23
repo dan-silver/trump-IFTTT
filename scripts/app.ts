@@ -2,34 +2,36 @@ import {actions, Action, User} from './common';
 
 declare var angular;
 
-var config = {
+const config = {
   apiKey: "AIzaSyC-8RA-yIW0pNfPjFrOS8G0eCEAlh8QbO0",
   authDomain: "trump-ifttt.firebaseapp.com",
   databaseURL: "https://trump-ifttt.firebaseio.com",
   storageBucket: "trump-ifttt.appspot.com",
   messagingSenderId: "248784558301" 
 };
+
 firebase.initializeApp(config);
 
-var database = firebase.database();
-var provider = new firebase.auth.GoogleAuthProvider();
+const database = firebase.database();
+const provider = new firebase.auth.GoogleAuthProvider();
 
 
-var app = angular.module('trump', []);
+const app = angular.module('trump', []);
 
 app.controller('TrumpController', function TrumpController($scope) {
   $scope.actions = actions;
 
-  var completeLogin = function(existingUser?:User):Promise<User> {
+  let completeLogin = function(existingUser?:User):Promise<User> {
     return new Promise<User>((resolve, reject) => {
       if (existingUser) {
-        existingUser.actions = existingUser.actions || {};
+        // this line 
+        // existingUser.actions = existingUser.actions || {};
         return resolve(existingUser);
       }
 
       return resolve(getUserFromGoogleSignin().then((newUser) => {
         newUser.actions = {placeholder:true};
-        return saveUserToDb(newUser);
+        return saveUserToDb(newUser, false);
       }));
     }).then((user) => {
       $scope.$apply();
@@ -60,28 +62,29 @@ app.controller('TrumpController', function TrumpController($scope) {
 
   let toggleAction = (enabled:boolean, user:User, action:Action):firebase.Promise<any> => {
     user.actions[action.code] = enabled;
-    return saveUserToDb(user);
+    $scope.$apply();
+    return saveUserToDb(user, true);
   }
 
-  let saveUserToDb = function(user:User):firebase.Promise<any> {
+  let saveUserToDb = function(user:User, includeActions:boolean):firebase.Promise<any> {
     let userData:User = {
         displayName: user.displayName,
         email: user.email,
-        uid: user.uid,
-        actions: user.actions
+        uid: user.uid
     };
 
-    return firebase.database().ref('users/' + user.uid).set(userData).then(() => {
+    if (includeActions) {
+        userData.actions = user.actions
+    }
+
+    return firebase.database().ref('users/' + user.uid).update(userData).then(() => {
       return user;
     });
   }
 
   $scope.disableAction = (action:Action) => {
     completeLogin(guser).then((user) => {
-      toggleAction(false, user, action)
-    })
-    .then(() => {
-      $scope.$apply();
+      toggleAction(false, user, action);
     })
   }
 
@@ -89,36 +92,31 @@ app.controller('TrumpController', function TrumpController($scope) {
   $scope.setupAction = (action:Action) => {
     completeLogin(guser).then((user) => {
       return toggleAction(true, user, action);
-    }).then(() => {
-      $scope.$apply();
-    })
+    });
   }
 
-  var signout = function():firebase.Promise<any> {
+  let signout = function():firebase.Promise<any> {
     return firebase.auth().signOut();
   }
 
   $scope.signout = signout;
 
-  var getUserFromGoogleSignin = function():Promise<User> {
+  let getUserFromGoogleSignin = function():Promise<User> {
     return new Promise((resolve, reject) => {
       firebase.auth().signInWithPopup(provider).then(function(result) {
-        console.log(result.user);
         resolve(result.user);
-      }).catch(function(error) {
-        reject(error);
       });
     });
   }
 
   $scope.signin = getUserFromGoogleSignin;
 
-
   // try to restore a session
-  var guser;
+  let guser;
   $scope.getUser = function() {
     return guser;
   }
+
   firebase.auth().onAuthStateChanged((user) => {
     guser = user;
     if (user) {

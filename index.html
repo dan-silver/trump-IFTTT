@@ -50,9 +50,13 @@
               <div class="mdl-card__supporting-text mdl-color-text--grey-600">
                 {{::action.name}}
               </div>
-              <div class="mdl-card__actions mdl-card--border">
+              <div class="mdl-card__actions mdl-card--border icon-card">
                 <a href="#" ng-show='!actionIsEnabled(action)' ng-click='setupAction(action)' class="mdl-button mdl-js-button mdl-js-ripple-effect">Connect with IFTTT</a>
                 <a href="#" ng-show='actionIsEnabled(action)' ng-click='disableAction(action)' class="mdl-button mdl-js-button mdl-js-ripple-effect">Disable</a>
+                <div class="mdl-layout-spacer"></div>
+                <span ng-show='actionIsEnabled(action)' class="mdl-button mdl-js-button mdl-button--icon">
+                  <i class="material-icons mdl-color-text--grey-600">settings</i>
+                </span>
               </div>
             </div>
             <div class="demo-separator mdl-cell--1-col"></div>
