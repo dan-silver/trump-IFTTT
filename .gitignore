@@ -1,5 +1,5 @@
 node_modules/
-bower_components/
-scripts/*.d.ts
-scripts/*.js
-scripts/*.js.map
+public/bower_components/
+public/scripts/*.d.ts
+public/scripts/*.js
+public/scripts/*.js.map
