@@ -4,6 +4,12 @@ export interface Action {
   cssClasses: string[]
 }
 
+export interface User {
+  displayName: string,
+  email: string,
+  uid: string,
+  actions: {}
+}
 
 export const actions:Action[] = [
   {

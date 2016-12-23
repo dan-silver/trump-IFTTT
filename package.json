@@ -11,8 +11,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "browserify": "^13.1.1",
     "static-server": "^2.0.3",
-    "typescript": "^2.1.4",
-    "browserify": "^13.1.1"
+    "typescript": "^2.1.4"
   }
 }
