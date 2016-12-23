@@ -54,7 +54,7 @@
                 <a href="#" ng-show='!actionIsEnabled(action)' ng-click='setupAction(action)' class="mdl-button mdl-js-button mdl-js-ripple-effect">Connect with IFTTT</a>
                 <a href="#" ng-show='actionIsEnabled(action)' ng-click='disableAction(action)' class="mdl-button mdl-js-button mdl-js-ripple-effect">Disable</a>
                 <div class="mdl-layout-spacer"></div>
-                <span ng-show='actionIsEnabled(action)' class="mdl-button mdl-js-button mdl-button--icon">
+                <span ng-show='actionIsEnabled(action)' ng-click="configureAction(action)" class="mdl-button mdl-js-button mdl-button--icon">
                   <i class="material-icons mdl-color-text--grey-600">settings</i>
                 </span>
               </div>
@@ -62,8 +62,19 @@
             <div class="demo-separator mdl-cell--1-col"></div>
           </div>
         </div>
+        <footer class="docs-text-styling docs-footer mdl-mini-footer mdl-color--grey-900">
+        <ul>
+          <li class="mdl-mini-footer--social-btn">
+            <a href="https://twitter.com/dansilver82" class="social-btn social-btn__twitter" role="button" title="Twitter"></a>
+          </li>
+          <li class="mdl-mini-footer--social-btn">
+            <a href="https://github.com/dan-silver/" class="social-btn social-btn__github" role="button" title="GitHub"></a>
+          </li>
+        </ul>
+      </footer>
       </main>
     </div>
+
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" style="position: fixed; left: -1000px; height: -1000px;">
         <defs>
           <mask id="piemask" maskContentUnits="objectBoundingBox">
@@ -77,5 +88,23 @@
         </defs>
       </svg>
     <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    
+
+    <dialog class="mdl-dialog">
+    <h4 class="mdl-dialog__title">{{selectedAction.name}}</h4>
+    <div class="mdl-dialog__content">
+      <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--12-col">
+          This action triggers your Maker channel with an event named <b>{{selectedAction.code}}</b>.
+        </div>
+        <div class="mdl-cell mdl-cell--12-col">
+          Visit <a href="https://internal-api.ifttt.com/myrecipes/personal/new">https://internal-api.ifttt.com/myrecipes/personal/new</a> and select the <b>Maker</b> channel to get started.
+        </div>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button" ng-click="closeActionDialog()">Close</button>
+    </div>
+  </dialog>
   </body>
 </html>

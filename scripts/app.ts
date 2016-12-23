@@ -43,7 +43,6 @@ app.controller('TrumpController', function TrumpController($scope) {
 
   $scope.actionIsEnabled = function(action:Action) {
     let user = $scope.getUser();
-    console.log(!user || user.actions == undefined)
     if (!user || user.actions == undefined) {
       return false;
     }
@@ -77,9 +76,7 @@ app.controller('TrumpController', function TrumpController($scope) {
         userData.actions = user.actions
     }
 
-    return firebase.database().ref('users/' + user.uid).update(userData).then(() => {
-      return user;
-    });
+    return firebase.database().ref('users/' + user.uid).update(userData);
   }
 
   $scope.disableAction = (action:Action) => {
@@ -92,6 +89,8 @@ app.controller('TrumpController', function TrumpController($scope) {
   $scope.setupAction = (action:Action) => {
     completeLogin(guser).then((user) => {
       return toggleAction(true, user, action);
+    }).then(() => {
+      configureAction(action);
     });
   }
 
@@ -128,4 +127,24 @@ app.controller('TrumpController', function TrumpController($scope) {
       $scope.$apply();
     }
   });
+
+
+
+
+
+  // https://internal-api.ifttt.com/maker
+
+  let configureAction = (action:Action) => {
+    $scope.selectedAction = action;
+
+    var dialog:any = document.querySelector('dialog');
+    
+    dialog.showModal()
+  }
+  $scope.configureAction = configureAction;
+
+  $scope.closeActionDialog = () => {
+    var dialog:any = document.querySelector('dialog');
+    dialog.close();
+  }
 });
