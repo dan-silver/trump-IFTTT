@@ -135,26 +135,35 @@ app.controller('TrumpController', function TrumpController($scope) {
   });
 
 
-  let makerSettings = () => {
-    $scope.makerKey = guser.makerKey;
+  // promise returns when dialog is closed
+  // resolve if key is set
+  let setMakerKey = ():Promise<any> => {
+    return new Promise((resolve, reject) => {
+      $scope.makerKey = guser.makerKey;
+
+      // hack to remove placeholder
+      // https://github.com/google/material-design-lite/issues/903
+      setTimeout(() => {
+        let input:any = document.querySelector('#makerKey').parentNode;
+        let textField:any = input.MaterialTextfield;
+        textField.checkDirty();
+      }, 0);
 
 
-    // hack to remove placeholder
-    // https://github.com/google/material-design-lite/issues/903
-    setTimeout(() => {
-      let input:any = document.querySelector('#makerKey').parentNode;
-      let textField:any = input.MaterialTextfield;
-      textField.checkDirty();
-    }, 0);
 
-
-
-    var dialog:any = document.getElementById('makerDialog');
-    dialog.showModal()    
+      var dialog:any = document.getElementById('makerDialog');
+      dialog.showModal();
+      dialog.addEventListener("close", () => {
+        if ($scope.makerKey)
+          return resolve();
+        else
+          return reject();
+      });
+    });
   }
 
 
-  $scope.makerSettings = makerSettings;
+  $scope.setMakerKey = setMakerKey;
 
 
   $scope.$watch('makerKey', (newValue, oldValue) => {
@@ -162,20 +171,29 @@ app.controller('TrumpController', function TrumpController($scope) {
       return;
     }
 
-    debugger;
     guser.makerKey = $scope.makerKey;
     saveUserToDb(guser, false, true);
 
   }, true);
 
-  // https://internal-api.ifttt.com/maker
+
+  let ensureMakerKeyIsSet = ():Promise<any> => {
+    if (guser.makerKey) {
+      return Promise.resolve();
+    }
+
+    return setMakerKey()
+  }
 
   let configureAction = (action:Action) => {
-    $scope.selectedAction = action;
+    ensureMakerKeyIsSet().then(() => {
+      $scope.selectedAction = action;
+      var dialog:any = document.getElementById('actionDialog');
 
-    var dialog:any = document.getElementById('actionDialog');
-    
-    dialog.showModal()
+      dialog.showModal();
+      $scope.$apply();
+    });
+
   }
   $scope.configureAction = configureAction;
 
