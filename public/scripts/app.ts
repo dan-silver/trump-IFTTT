@@ -14,17 +14,6 @@ app.controller('TrumpController', function TrumpController($scope) {
     return user.actions[action.code];
   }
 
-  function listenForActions(user:User) {
-    firebase.database().ref('users/' + user.uid).once('value').then(function(snapshot) {
-      let userDb:User = snapshot.val();
-      if (userDb) {
-        user.actions = userDb.actions;
-        user.makerKey = userDb.makerKey;
-        $scope.$apply();
-      }
-    });
-  }
-
   let toggleAction = (enabled:boolean, user:User, action:Action):firebase.Promise<any> => {
     user.actions[action.code] = enabled;
     $scope.$apply();
@@ -49,8 +38,20 @@ app.controller('TrumpController', function TrumpController($scope) {
     });
   }
 
+  $scope.manualLogin = () => {
+    users.completeLogin().then((user) => {
+      guser = user;
+      $scope.$apply();
+    });
+  }
+
   $scope.setupAction = (action:Action) => {
-    users.completeLogin(guser).then(() => {
+    console.log("AAAAAAAaa")
+    users.completeLogin(guser).then((user) => {
+      guser = user;
+      $scope.$apply();
+      console.log("BBBBBBBBBBBBBBBB")
+      debugger;
       $scope.$apply();
       return configureAction(action);
     }).then(() => {
@@ -71,16 +72,17 @@ app.controller('TrumpController', function TrumpController($scope) {
   }
 
   firebase.auth().onAuthStateChanged((user) => {
-    guser = user;
-    if (user) {
-      users.completeLogin(user).then((user) => {
-        $scope.$apply();
-        listenForActions(guser);
-      });
-    } else {
+    // when log out
+    if (!user) {
       guser = null;
       $scope.$apply();
+      return;
     }
+
+    users.completeLogin(user).then((user) => {
+      guser = user;
+      $scope.$apply();
+    })
   });
 
   // promise returns when dialog is closed
@@ -121,7 +123,7 @@ app.controller('TrumpController', function TrumpController($scope) {
 
 
   let ensureMakerKeyIsSet = ():Promise<any> => {
-    if (guser.makerKey) {
+    if (guser && guser.makerKey) {
       return Promise.resolve();
     }
 

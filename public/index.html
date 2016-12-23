@@ -26,7 +26,7 @@
           <span class="mdl-layout-title">Trump IFTTT</span>
           <span class="mdl-layout-title subtitle">Let's automate away the next 4 years</span>
           <div class="mdl-layout-spacer"></div>
-          <button ng-if="!getUser()" ng-click="completeLogin()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+          <button ng-if="!getUser()" ng-click="manualLogin()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
             Log in
           </button>
           <img ng-if="getUser()" ng-src="{{getUser().photoURL}}" class="demo-avatar">

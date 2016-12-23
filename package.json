@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "static-server -p 3000",
+    "serve": "static-server public/ -p 3000",
     "build": "tsc && browserify scripts/app.js -o scripts/main.js"
   },
   "author": "",

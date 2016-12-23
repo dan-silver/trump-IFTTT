@@ -352,3 +352,8 @@ _:-ms-input-placeholder, :root .demo-graph {
 #makerDialog {
   min-width: 44%;
 }
+
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.33);
+}
