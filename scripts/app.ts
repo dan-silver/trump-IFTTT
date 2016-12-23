@@ -91,11 +91,23 @@ app.controller('TrumpController', function TrumpController($scope) {
   }
 
 
+  let configureAction = (action:Action) => {
+    return ensureMakerKeyIsSet().then(() => {
+      $scope.selectedAction = action;
+      var dialog:any = document.getElementById('actionDialog');
+
+      dialog.showModal();
+      $scope.$apply();
+    })
+  }
+
+
   $scope.setupAction = (action:Action) => {
     completeLogin(guser).then(() => {
+      return configureAction(action);
+    }).then(() => {
       return toggleAction(true, guser, action);
     }).then(() => {
-      configureAction(action);
       $scope.$apply();
     });
   }
@@ -153,11 +165,13 @@ app.controller('TrumpController', function TrumpController($scope) {
 
       var dialog:any = document.getElementById('makerDialog');
       dialog.showModal();
+      console.log
       dialog.addEventListener("close", () => {
         if ($scope.makerKey)
           return resolve();
-        else
+        else {
           return reject();
+        }
       });
     });
   }
@@ -182,19 +196,17 @@ app.controller('TrumpController', function TrumpController($scope) {
       return Promise.resolve();
     }
 
-    return setMakerKey()
-  }
-
-  let configureAction = (action:Action) => {
-    ensureMakerKeyIsSet().then(() => {
-      $scope.selectedAction = action;
-      var dialog:any = document.getElementById('actionDialog');
-
-      dialog.showModal();
-      $scope.$apply();
+    return setMakerKey().catch(() => {
+      const snackbarContainer:any = document.querySelector('#demo-snackbar-example');
+      const data = {
+        message: "We couldn't read your Maker key.",
+        timeout: 2500
+      };
+      snackbarContainer.MaterialSnackbar.showSnackbar(data);
+      throw 'no-maker-key'
     });
-
   }
+
   $scope.configureAction = configureAction;
 
   $scope.closeDialogById = (id:string) => {
