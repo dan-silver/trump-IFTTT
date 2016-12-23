@@ -31,7 +31,7 @@ app.controller('TrumpController', function TrumpController($scope) {
 
       return resolve(getUserFromGoogleSignin().then((newUser) => {
         newUser.actions = {placeholder:true};
-        return saveUserToDb(newUser, false);
+        return saveUserToDb(newUser, false, false);
       }));
     }).then((user) => {
       $scope.$apply();
@@ -50,10 +50,11 @@ app.controller('TrumpController', function TrumpController($scope) {
   }
 
   function listenForActions(user:User) {
-    firebase.database().ref('users/' + user.uid + '/actions').once('value').then(function(snapshot) {
-      let actions = snapshot.val();
-      if (actions) {
-        user.actions = actions;
+    firebase.database().ref('users/' + user.uid).once('value').then(function(snapshot) {
+      let userDb:User = snapshot.val();
+      if (userDb) {
+        user.actions = userDb.actions;
+        user.makerKey = userDb.makerKey;
         $scope.$apply();
       }
     });
@@ -62,10 +63,10 @@ app.controller('TrumpController', function TrumpController($scope) {
   let toggleAction = (enabled:boolean, user:User, action:Action):firebase.Promise<any> => {
     user.actions[action.code] = enabled;
     $scope.$apply();
-    return saveUserToDb(user, true);
+    return saveUserToDb(user, true, false);
   }
 
-  let saveUserToDb = function(user:User, includeActions:boolean):firebase.Promise<any> {
+  let saveUserToDb = function(user:User, includeActions:boolean, includeMakerKey:boolean):firebase.Promise<any> {
     let userData:User = {
         displayName: user.displayName,
         email: user.email,
@@ -73,7 +74,11 @@ app.controller('TrumpController', function TrumpController($scope) {
     };
 
     if (includeActions) {
-        userData.actions = user.actions
+        userData.actions = user.actions;
+    }
+
+    if (includeMakerKey) {
+        userData.makerKey = user.makerKey;
     }
 
     return firebase.database().ref('users/' + user.uid).update(userData);
@@ -87,10 +92,11 @@ app.controller('TrumpController', function TrumpController($scope) {
 
 
   $scope.setupAction = (action:Action) => {
-    completeLogin(guser).then((user) => {
-      return toggleAction(true, user, action);
+    completeLogin(guser).then(() => {
+      return toggleAction(true, guser, action);
     }).then(() => {
       configureAction(action);
+      $scope.$apply();
     });
   }
 
@@ -111,7 +117,7 @@ app.controller('TrumpController', function TrumpController($scope) {
   $scope.signin = getUserFromGoogleSignin;
 
   // try to restore a session
-  let guser;
+  let guser:User;
   $scope.getUser = function() {
     return guser;
   }
@@ -129,22 +135,52 @@ app.controller('TrumpController', function TrumpController($scope) {
   });
 
 
+  let makerSettings = () => {
+    $scope.makerKey = guser.makerKey;
 
 
+    // hack to remove placeholder
+    // https://github.com/google/material-design-lite/issues/903
+    setTimeout(() => {
+      let input:any = document.querySelector('#makerKey').parentNode;
+      let textField:any = input.MaterialTextfield;
+      textField.checkDirty();
+    }, 0);
+
+
+
+    var dialog:any = document.getElementById('makerDialog');
+    dialog.showModal()    
+  }
+
+
+  $scope.makerSettings = makerSettings;
+
+
+  $scope.$watch('makerKey', (newValue, oldValue) => {
+    if (newValue === oldValue) {
+      return;
+    }
+
+    debugger;
+    guser.makerKey = $scope.makerKey;
+    saveUserToDb(guser, false, true);
+
+  }, true);
 
   // https://internal-api.ifttt.com/maker
 
   let configureAction = (action:Action) => {
     $scope.selectedAction = action;
 
-    var dialog:any = document.querySelector('dialog');
+    var dialog:any = document.getElementById('actionDialog');
     
     dialog.showModal()
   }
   $scope.configureAction = configureAction;
 
-  $scope.closeActionDialog = () => {
-    var dialog:any = document.querySelector('dialog');
+  $scope.closeDialogById = (id:string) => {
+    var dialog:any = document.getElementById(id);
     dialog.close();
   }
 });

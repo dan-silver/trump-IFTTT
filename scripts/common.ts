@@ -8,7 +8,8 @@ export interface User {
   displayName: string,
   email: string,
   uid: string,
-  actions?: {}
+  actions?: {},
+  makerKey?: string
 }
 
 export const actions:Action[] = [
