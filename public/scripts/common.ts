@@ -39,6 +39,11 @@ export const actions:Action[] = [
     cssClasses: ["mdl-color--purple-300", "plane-background"]
   },
   {
+    name:"Trump repeals Obamacare",
+    code:"repeal-obamacare",
+    cssClasses: ["mdl-color--blue-400", "doctor-background"]
+  },
+  {
     name:"Congress votes to impeach Trump",
     code:"impeach-trump",
     cssClasses: ["mdl-color--lime-300", "congress-background"]

@@ -210,6 +210,11 @@ _:-ms-input-placeholder, :root .demo-graph {
   background-image: url('images/plane.png');
 }
 
+.doctor-background {
+  background-image: url('images/doctor.svg');
+  background-size: 180px;
+}
+
 .wall-background {
   background-image: url('images/wall.svg');
   background-size: 70px;
