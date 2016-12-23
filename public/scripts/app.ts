@@ -143,8 +143,19 @@ app.controller('TrumpController', function TrumpController($scope) {
   }
 
   $scope.closeDialogById = (id:string) => {
+
+    // https://github.com/react-mdl/react-mdl/issues/253
+    // content isn't scrollable after closing dialog
+
+    let container:any = document.querySelector('main.mdl-layout__content');
+    container.style.overflowY = '';
+    
+  
     var dialog:any = document.getElementById(id);
     dialog.close();
+
+    container.style.overflowY = 'auto';
+    
   };
 
   $scope.actions = actions;

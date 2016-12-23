@@ -210,6 +210,17 @@ _:-ms-input-placeholder, :root .demo-graph {
   background-image: url('images/plane.png');
 }
 
+.wall-background {
+  background-image: url('images/wall.svg');
+  background-size: 70px;
+}
+
+.police-background {
+  background-image: url('images/police.svg');
+  background-size: 150px;
+  background-position-y: 70px !important;
+}
+
 .demo-cards .mdl-card__actions a {
   color: #00BCD4;
   text-decoration: none;
@@ -348,6 +359,7 @@ _:-ms-input-placeholder, :root .demo-graph {
     width: 22px;
     height: 22px  
 }
+
 
 #makerDialog {
   min-width: 44%;

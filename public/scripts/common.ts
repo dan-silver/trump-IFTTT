@@ -42,6 +42,16 @@ export const actions:Action[] = [
     name:"Congress votes to impeach Trump",
     code:"impeach-trump",
     cssClasses: ["mdl-color--lime-300", "congress-background"]
+  },
+  {
+    name:"Construction begins on the Mexican wall",
+    code:"wall-construction",
+    cssClasses: ["mdl-color--amber-300", "wall-background"]
+  },
+  {
+    name:"Trump creates deportation force",
+    code:"deportation-force",
+    cssClasses: ["mdl-color--red-400", "police-background"]
   }
 ]
 
