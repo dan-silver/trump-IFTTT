@@ -19,11 +19,6 @@ export const actions:Action[] = [
     cssClasses: ["mdl-color--grey-300", "explosion_background"]
   },
   {
-    name:"Trump fires cabinet member",
-    code:"fire-cabinet",
-    cssClasses: ["mdl-color--light-blue-300", "trump-background"]
-  },
-  {
     name:"Trump bans Muslim immigration",
     code:"muslim-immigration",
     cssClasses: ["mdl-color--cyan-300", "mosque-background"]
@@ -52,6 +47,11 @@ export const actions:Action[] = [
     name:"Construction begins on the Mexican wall",
     code:"wall-construction",
     cssClasses: ["mdl-color--amber-300", "wall-background"]
+  },
+  {
+    name:"Trump fires cabinet member",
+    code:"fire-cabinet",
+    cssClasses: ["mdl-color--light-blue-300", "trump-background"]
   },
   {
     name:"Trump creates deportation force",

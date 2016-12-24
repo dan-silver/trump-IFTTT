@@ -6,7 +6,7 @@ declare var angular;
 const app = angular.module('trump', []);
 
 app.controller('TrumpController', function TrumpController($scope) {
-  $scope.actionIsEnabled = function(action:Action) {
+  $scope.actionIsEnabled = (action:Action) => {
     let user = $scope.getUser();
     if (!user || user.actions == undefined) {
       return false;
@@ -46,12 +46,8 @@ app.controller('TrumpController', function TrumpController($scope) {
   }
 
   $scope.setupAction = (action:Action) => {
-    console.log("AAAAAAAaa")
     users.completeLogin(guser).then((user) => {
       guser = user;
-      $scope.$apply();
-      console.log("BBBBBBBBBBBBBBBB")
-      debugger;
       $scope.$apply();
       return configureAction(action);
     }).then(() => {
@@ -61,13 +57,13 @@ app.controller('TrumpController', function TrumpController($scope) {
     });
   }
 
-  let signout = function():firebase.Promise<any> {
+  let signout = ():firebase.Promise<any> => {
     return firebase.auth().signOut();
   }
 
   // try to restore a session
   let guser:User;
-  $scope.getUser = function() {
+  $scope.getUser = () => {
     return guser;
   }
 
